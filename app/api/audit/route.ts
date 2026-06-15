@@ -97,13 +97,14 @@ async function runAuditBackground(auditId: string, url: string) {
       await db.from('audits').update({ content_status: 'failed' }).eq('id', auditId)
     }
 
-    // Mark overall done once both agents have settled
+    // Always the final line — guarantees the frontend stops polling
     await db.from('audits').update({ status: 'done' }).eq('id', auditId)
   } catch (err) {
     console.error('[Audit pipeline failed]', err)
-    await db
-      .from('audits')
-      .update({ status: 'failed', seo_status: 'failed', content_status: 'failed' })
-      .eq('id', auditId)
+    await db.from('audits').update({
+      status: 'failed',
+      seo_status: 'failed',
+      content_status: 'failed',
+    }).eq('id', auditId)
   }
 }

@@ -48,6 +48,27 @@ function countWords(text: string): number {
 
 export async function auditPage(url: string): Promise<PageAudit> {
   const { html, loadTimeMs, finalUrl } = await fetchPage(url)
+
+  if (!html || html.trim().length < 100) {
+    return {
+      url,
+      title: null,
+      titleLength: 0,
+      metaDescription: null,
+      metaDescriptionLength: 0,
+      h1Count: 0,
+      h2Count: 0,
+      wordCount: 0,
+      imagesWithoutAlt: 0,
+      internalLinks: 0,
+      externalLinks: 0,
+      hasCanonical: false,
+      loadTimeMs,
+      score: 0,
+      issues: ['Could not fetch page — site may be blocking automated requests'],
+    }
+  }
+
   const $ = cheerio.load(html)
 
   const title = $('title').first().text().trim() || null
@@ -159,6 +180,27 @@ export async function auditPage(url: string): Promise<PageAudit> {
 export async function runSEOAudit(url: string): Promise<PageAudit[]> {
   // Fetch once to extract links, then audit homepage from cached result
   const { html, loadTimeMs, finalUrl } = await fetchPage(url)
+
+  if (!html || html.trim().length < 100) {
+    return [{
+      url,
+      title: null,
+      titleLength: 0,
+      metaDescription: null,
+      metaDescriptionLength: 0,
+      h1Count: 0,
+      h2Count: 0,
+      wordCount: 0,
+      imagesWithoutAlt: 0,
+      internalLinks: 0,
+      externalLinks: 0,
+      hasCanonical: false,
+      loadTimeMs: 0,
+      score: 0,
+      issues: ['Could not fetch page — site may be blocking automated requests'],
+    }]
+  }
+
   const internalLinks = extractInternalLinks(html, finalUrl)
 
   // Audit homepage from already-fetched HTML by loading directly

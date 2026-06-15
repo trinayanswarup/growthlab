@@ -3,14 +3,15 @@ import { createServerClient } from '@/lib/supabase'
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   const db = createServerClient()
 
   const { data, error } = await db
     .from('audit_pages')
     .select('id, url, title, seo_score, word_count, load_time_ms, issues')
-    .eq('audit_id', params.id)
+    .eq('audit_id', id)
     .order('seo_score', { ascending: false })
 
   if (error) {

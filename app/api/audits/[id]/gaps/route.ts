@@ -3,14 +3,15 @@ import { createServerClient } from '@/lib/supabase'
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   const db = createServerClient()
 
   const { data, error } = await db
     .from('keyword_gaps')
     .select('id, keyword, intent, competitor, gap_score')
-    .eq('audit_id', params.id)
+    .eq('audit_id', id)
     .order('gap_score', { ascending: false })
 
   if (error) {
