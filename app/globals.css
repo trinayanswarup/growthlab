@@ -5,15 +5,17 @@
 :root {
   --background: #0a0a0a;
   --foreground: #ededed;
-  --muted: #6b7280;
-  --border: #1f1f1f;
-  --accent: #22d3ee;
+  --muted: #8b8b8b;
+  --border: #222222;
+  --surface: #111111;
+  --surface-2: #1a1a1a;
+  --accent: #ff6363;
+  --accent-hover: #ff4444;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {
@@ -31,18 +33,18 @@ progress.gap-score-bar {
   height: 0.375rem;
   border: none;
   border-radius: 9999px;
-  background: #1f1f1f;
+  background: #222222;
   overflow: hidden;
 }
 progress.gap-score-bar::-webkit-progress-bar {
-  background: #1f1f1f;
+  background: #222222;
   border-radius: 9999px;
 }
 progress.gap-score-bar::-webkit-progress-value {
-  background: #22d3ee;
+  background: #ff6363;
   border-radius: 9999px;
 }
 progress.gap-score-bar::-moz-progress-bar {
-  background: #22d3ee;
+  background: #ff6363;
   border-radius: 9999px;
 }

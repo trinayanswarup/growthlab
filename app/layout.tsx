@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import './globals.css'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'GrowthLab — Competitive Growth Intelligence',
@@ -17,12 +20,6 @@ export const metadata: Metadata = {
   },
 }
 
-const navLinks = [
-  { href: '/audit', label: 'Audit' },
-  { href: '/history', label: 'History' },
-  { href: '/tools', label: 'Tools' },
-]
-
 export default function RootLayout({
   children,
 }: {
@@ -30,29 +27,24 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex bg-[#0a0a0a] text-[#ededed]">
-        {/* Sidebar */}
-        <aside className="w-48 flex-shrink-0 flex flex-col border-r border-[#1f1f1f] bg-[#0a0a0a]">
-          <div className="px-4 py-5 border-b border-[#1f1f1f]">
-            <span className="text-lg font-bold tracking-tight font-mono text-[#22d3ee]">
-              GrowthLab
-            </span>
+      <body className={`${inter.className} min-h-screen bg-black text-white antialiased`}>
+        <nav className="container mx-auto flex items-center justify-between px-4 py-4 mt-4">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-black">
+              <span className="font-bold text-sm">G</span>
+            </div>
+            <span className="text-xl font-bold text-white">GrowthLab</span>
+          </Link>
+          {/* Nav links */}
+          <div className="flex items-center gap-8">
+            <Link href="/" className="text-sm text-gray-300 hover:text-white transition-colors">Home</Link>
+            <Link href="/history" className="text-sm text-gray-300 hover:text-white transition-colors">History</Link>
+            <Link href="/tools" className="text-sm text-gray-300 hover:text-white transition-colors">Tools</Link>
           </div>
-          <nav className="flex flex-col gap-1 px-2 py-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="px-3 py-2 rounded text-sm text-[#a1a1aa] transition-colors hover:bg-white/5"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </aside>
+        </nav>
 
-        {/* Main content */}
-        <main className="flex-1 min-h-screen overflow-auto">
+        <main className="relative z-10">
           {children}
         </main>
       </body>

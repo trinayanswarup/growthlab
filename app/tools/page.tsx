@@ -54,7 +54,7 @@ function CopyButton({ text, label = 'Copy HTML' }: { text: string; label?: strin
     <button
       type="button"
       onClick={handleCopy}
-      className="px-3 py-1.5 rounded text-xs bg-[#1f1f1f] border border-[#2a2a2a] text-[#a1a1aa] hover:text-[#ededed] hover:border-[#3a3a3a] transition-colors"
+      className="px-3 py-1.5 rounded-lg text-xs bg-[#1a1a1a] border border-[#222222] text-[#8b8b8b] hover:text-[#ededed] hover:border-[#3a3a3a] transition-colors"
     >
       {copied ? 'Copied!' : label}
     </button>
@@ -98,7 +98,7 @@ function ComparisonTab() {
 
   return (
     <div>
-      <p className="text-[#6b7280] text-sm mb-6">
+      <p className="text-[#8b8b8b] text-sm mb-6">
         Enter two products to generate a publish-ready comparison page with affiliate CTA placeholders.
       </p>
 
@@ -110,23 +110,23 @@ function ComparisonTab() {
             onChange={(e) => setProduct1(e.target.value)}
             placeholder="e.g. NordVPN"
             disabled={loading}
-            className="flex-1 px-4 py-2.5 rounded-lg bg-[#111111] border border-[#2a2a2a] text-[#ededed] placeholder-[#4b5563] text-sm focus:outline-none focus:border-[#22d3ee] transition-colors disabled:opacity-50"
+            className="flex-1 px-4 py-2.5 rounded-lg bg-[#111111] border border-[#222222] text-[#ededed] placeholder-[#4b4b4b] text-sm focus:outline-none focus:border-[#ff6363] transition-colors disabled:opacity-50"
           />
-          <div className="flex items-center text-[#4b5563] text-sm font-mono px-1">vs</div>
+          <div className="flex items-center text-[#4b4b4b] text-sm font-mono px-1">vs</div>
           <input
             type="text"
             value={product2}
             onChange={(e) => setProduct2(e.target.value)}
             placeholder="e.g. ExpressVPN"
             disabled={loading}
-            className="flex-1 px-4 py-2.5 rounded-lg bg-[#111111] border border-[#2a2a2a] text-[#ededed] placeholder-[#4b5563] text-sm focus:outline-none focus:border-[#22d3ee] transition-colors disabled:opacity-50"
+            className="flex-1 px-4 py-2.5 rounded-lg bg-[#111111] border border-[#222222] text-[#ededed] placeholder-[#4b4b4b] text-sm focus:outline-none focus:border-[#ff6363] transition-colors disabled:opacity-50"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading || !product1.trim() || !product2.trim()}
-          className="px-5 py-2.5 rounded-lg bg-[#22d3ee] text-[#0a0a0a] font-semibold text-sm transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-5 py-2.5 rounded-lg bg-[#ff6363] text-[#0a0a0a] font-semibold text-sm transition-colors hover:bg-[#ff4444] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {loading ? stages.label ?? 'Working…' : 'Generate comparison'}
         </button>
@@ -135,9 +135,9 @@ function ComparisonTab() {
       {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
 
       {loading && (
-        <div className="rounded-lg border border-[#1f1f1f] bg-[#111111] p-6 text-center animate-pulse">
-          <p className="text-[#6b7280] text-sm">{stages.label}</p>
-          <p className="text-xs text-[#4b5563] mt-1">This takes ~20–30 seconds</p>
+        <div className="rounded-2xl border border-[#222222] bg-[#111111] p-6 text-center animate-pulse">
+          <p className="text-[#8b8b8b] text-sm">{stages.label}</p>
+          <p className="text-xs text-[#4b4b4b] mt-1">This takes ~20–30 seconds</p>
         </div>
       )}
 
@@ -145,8 +145,8 @@ function ComparisonTab() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
-              <span className="text-xs text-[#6b7280]">Preview</span>
-              <span className="text-xs font-mono text-[#4b5563] bg-[#1f1f1f] px-2 py-0.5 rounded">
+              <span className="text-xs text-[#8b8b8b]">Preview</span>
+              <span className="text-xs font-mono text-[#8b8b8b] bg-[#1a1a1a] px-2 py-0.5 rounded">
                 {wordCount.toLocaleString()} words
               </span>
             </div>
@@ -154,7 +154,7 @@ function ComparisonTab() {
           </div>
 
           <div
-            className="rounded-lg border border-[#1f1f1f] bg-white text-[#111111] p-8 max-h-[70vh] overflow-y-auto"
+            className="rounded-2xl border border-[#222222] bg-white text-[#111111] p-8 max-h-[70vh] overflow-y-auto"
             // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted Gemini output rendered for preview
             dangerouslySetInnerHTML={{ __html: result.html }}
           />
@@ -230,13 +230,13 @@ function HeadlineTab() {
 
   return (
     <div>
-      <p className="text-[#6b7280] text-sm mb-6">
+      <p className="text-[#8b8b8b] text-sm mb-6">
         Test a headline against 5 variants optimised for your goal.
       </p>
 
       <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-4">
         <div>
-          <label className="block text-xs font-medium text-[#6b7280] mb-1.5 uppercase tracking-wider">
+          <label className="block text-xs font-medium text-[#8b8b8b] mb-1.5 uppercase tracking-wider">
             Headline
           </label>
           <input
@@ -245,12 +245,12 @@ function HeadlineTab() {
             onChange={(e) => setHeadline(e.target.value)}
             placeholder="e.g. Best VPN for Streaming 2025"
             disabled={loading}
-            className="w-full px-4 py-2.5 rounded-lg bg-[#111111] border border-[#2a2a2a] text-[#ededed] placeholder-[#4b5563] text-sm focus:outline-none focus:border-[#22d3ee] transition-colors disabled:opacity-50"
+            className="w-full px-4 py-2.5 rounded-lg bg-[#111111] border border-[#222222] text-[#ededed] placeholder-[#4b4b4b] text-sm focus:outline-none focus:border-[#ff6363] transition-colors disabled:opacity-50"
           />
         </div>
 
         <div>
-          <p className="text-xs font-medium text-[#6b7280] mb-2 uppercase tracking-wider">Goal</p>
+          <p className="text-xs font-medium text-[#8b8b8b] mb-2 uppercase tracking-wider">Goal</p>
           <div className="flex flex-wrap gap-2">
             {HEADLINE_GOALS.map((g) => (
               <label key={g.id} className="flex items-center gap-2 cursor-pointer">
@@ -261,9 +261,9 @@ function HeadlineTab() {
                   checked={goal === g.id}
                   onChange={() => setGoal(g.id)}
                   disabled={loading}
-                  className="accent-[#22d3ee]"
+                  className="accent-[#ff6363]"
                 />
-                <span className="text-sm text-[#a1a1aa]">{g.label}</span>
+                <span className="text-sm text-[#b0b0b0]">{g.label}</span>
               </label>
             ))}
           </div>
@@ -272,7 +272,7 @@ function HeadlineTab() {
         <button
           type="submit"
           disabled={loading || !headline.trim()}
-          className="self-start px-5 py-2.5 rounded-lg bg-[#22d3ee] text-[#0a0a0a] font-semibold text-sm transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="self-start px-5 py-2.5 rounded-lg bg-[#ff6363] text-[#0a0a0a] font-semibold text-sm transition-colors hover:bg-[#ff4444] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {loading ? 'Testing…' : 'Test headline'}
         </button>
@@ -281,8 +281,8 @@ function HeadlineTab() {
       {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
 
       {loading && (
-        <div className="rounded-lg border border-[#1f1f1f] bg-[#111111] p-6 text-center animate-pulse">
-          <p className="text-[#6b7280] text-sm">Generating variants…</p>
+        <div className="rounded-2xl border border-[#222222] bg-[#111111] p-6 text-center animate-pulse">
+          <p className="text-[#8b8b8b] text-sm">Generating variants…</p>
         </div>
       )}
 
@@ -290,15 +290,15 @@ function HeadlineTab() {
         <div>
           <div className="flex flex-col gap-3 mb-6">
             {variants.map((v, i) => (
-              <div key={i} className="rounded-lg border border-[#1f1f1f] bg-[#111111] p-4">
+              <div key={i} className="rounded-2xl border border-[#222222] bg-[#111111] p-4">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <p className="text-sm font-medium text-[#ededed] leading-snug">{v.variant}</p>
-                  <span className="flex-shrink-0 text-xs font-mono font-bold text-[#22d3ee] bg-[#22d3ee]/10 px-2 py-0.5 rounded">
+                  <span className="flex-shrink-0 text-xs font-mono font-bold text-[#ff6363] bg-[#ff6363]/10 px-2 py-0.5 rounded">
                     {v.estimatedCTRScore}
                   </span>
                 </div>
                 <p className="text-xs text-amber-400 mb-1">{v.angle}</p>
-                <p className="text-xs text-[#6b7280]">{v.reasoning}</p>
+                <p className="text-xs text-[#8b8b8b]">{v.reasoning}</p>
               </div>
             ))}
           </div>
@@ -308,26 +308,26 @@ function HeadlineTab() {
               type="button"
               onClick={handleCombine}
               disabled={combining}
-              className="px-4 py-2.5 rounded-lg border border-[#22d3ee]/40 text-[#22d3ee] text-sm font-medium hover:bg-[#22d3ee]/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-4 py-2.5 rounded-lg border border-[#ff6363]/40 text-[#ff6363] text-sm font-medium hover:bg-[#ff6363]/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {combining ? 'Combining…' : 'Combine best elements'}
             </button>
           )}
 
           {combined && (
-            <div className="rounded-xl border border-[#22d3ee]/30 bg-[#22d3ee]/5 p-4">
+            <div className="rounded-2xl border border-[#ff6363]/30 bg-[#ff6363]/5 p-4">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs text-[#6b7280] uppercase tracking-wider">Best headline</p>
+                <p className="text-xs text-[#8b8b8b] uppercase tracking-wider">Best headline</p>
                 <CopyButton text={combined} label="Copy" />
               </div>
-              <p className="text-base font-semibold text-[#22d3ee]">{combined}</p>
+              <p className="text-base font-semibold text-[#ff6363]">{combined}</p>
             </div>
           )}
         </div>
       )}
 
       {variants && variants.length === 0 && !loading && (
-        <p className="text-[#6b7280] text-sm">No variants returned — try a different headline.</p>
+        <p className="text-[#8b8b8b] text-sm">No variants returned — try a different headline.</p>
       )}
     </div>
   )
@@ -343,12 +343,12 @@ export default function ToolsPage() {
   ]
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="px-6 py-10 max-w-4xl mx-auto">
       <h1 className="text-2xl font-semibold mb-1">Tools</h1>
-      <p className="text-[#6b7280] text-sm mb-6">AI-powered content generation tools.</p>
+      <p className="text-[#8b8b8b] text-sm mb-6">AI-powered content generation tools.</p>
 
       {/* Tab bar */}
-      <div className="flex gap-1 mb-8 border-b border-[#1f1f1f]">
+      <div className="flex gap-1 mb-8 border-b border-[#222222]">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -356,8 +356,8 @@ export default function ToolsPage() {
             onClick={() => setTab(t.id)}
             className={`px-4 py-2 text-sm transition-colors border-b-2 -mb-px ${
               tab === t.id
-                ? 'text-[#22d3ee] border-[#22d3ee]'
-                : 'text-[#6b7280] border-transparent hover:text-[#a1a1aa]'
+                ? 'text-[#ff6363] border-[#ff6363]'
+                : 'text-[#8b8b8b] border-transparent hover:text-[#ededed]'
             }`}
           >
             {t.label}
@@ -367,7 +367,7 @@ export default function ToolsPage() {
 
       {tab === 'comparison' && <ComparisonTab />}
       {tab === 'brief' && (
-        <p className="text-[#6b7280] text-sm">
+        <p className="text-[#8b8b8b] text-sm">
           Content briefs are generated inline from the presence matrix — click &ldquo;Generate →&rdquo; on any gap row in a report.
         </p>
       )}
