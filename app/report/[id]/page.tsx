@@ -21,6 +21,16 @@ interface CRORow {
   recommendation: string
 }
 
+interface SeoPage {
+  id: string
+  url: string
+  title: string | null
+  seo_score: number
+  word_count: number
+  load_time_ms: number
+  issues: string[]
+}
+
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
 const REVENUE_ORDER: Record<string, number> = { high: 0, medium: 1, low: 2 }
@@ -377,6 +387,7 @@ export default function ReportPage({ params }: Props) {
   const reportId = params.id
   const [report, setReport] = useState<Report | null>(null)
   const [matrix, setMatrix] = useState<PresenceResult[] | null>(null)
+  const [seoPages, setSeoPages] = useState<SeoPage[] | null>(null)
   const [monetisation, setMonetisation] = useState<MonetisationRow[] | null>(null)
   const [cro, setCro] = useState<CRORow[] | null>(null)
   const [notFound, setNotFound] = useState(false)
@@ -412,6 +423,15 @@ export default function ReportPage({ params }: Props) {
       .then((data) => { if (Array.isArray(data)) setMatrix(sortMatrix(data)) })
       .catch(console.error)
   }, [reportId, report?.presence_status])
+
+  // Fetch SEO pages once done
+  useEffect(() => {
+    if (!reportId || report?.seo_status !== 'done') return
+    fetch(`/api/reports/${reportId}/seo`)
+      .then((r) => r.json())
+      .then((data) => { if (Array.isArray(data)) setSeoPages(data) })
+      .catch(console.error)
+  }, [reportId, report?.seo_status])
 
   // Fetch monetisation once done
   useEffect(() => {
@@ -589,6 +609,63 @@ export default function ReportPage({ params }: Props) {
 
         {matrix && matrix.length === 0 && !isRunning && (
           <p className="text-[#6b7280] text-sm">No presence data found.</p>
+        )}
+      </section>
+
+      {/* SEO Audit */}
+      <section className="mt-10">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-[#6b7280] mb-4">
+          SEO Audit
+        </h2>
+
+        {(report.seo_status === 'pending' || report.seo_status === 'running') && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="animate-pulse rounded-lg border border-[#1f1f1f] bg-[#111111] p-4 h-28" />
+            ))}
+          </div>
+        )}
+
+        {report.seo_status === 'failed' && (
+          <p className="text-[#6b7280] text-sm">SEO audit failed — site may be blocking automated requests.</p>
+        )}
+
+        {seoPages && seoPages.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {seoPages.map((page) => {
+              const scoreCls = page.seo_score >= 80
+                ? 'bg-green-500/15 text-green-400 border-green-500/30'
+                : page.seo_score >= 50
+                ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
+                : 'bg-red-500/15 text-red-400 border-red-500/30'
+              return (
+                <div key={page.id} className="rounded-lg border border-[#1f1f1f] bg-[#111111] p-4">
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <p className="text-xs font-mono text-[#ededed] truncate flex-1" title={page.url}>
+                      {page.url.replace(/^https?:\/\//, '')}
+                    </p>
+                    <span className={`flex-shrink-0 text-xs font-mono font-bold px-2 py-0.5 rounded-full border ${scoreCls}`}>
+                      {page.seo_score}
+                    </span>
+                  </div>
+                  {page.title && (
+                    <p className="text-xs text-[#6b7280] truncate mb-2" title={page.title}>{page.title}</p>
+                  )}
+                  <div className="flex items-center gap-3 text-xs text-[#4b5563] mb-2">
+                    <span>{page.word_count.toLocaleString()} words</span>
+                    <span>{page.load_time_ms}ms</span>
+                  </div>
+                  {Array.isArray(page.issues) && page.issues.length > 0 && (
+                    <ul className="flex flex-col gap-0.5">
+                      {page.issues.map((issue, i) => (
+                        <li key={i} className="text-xs text-red-400 leading-snug">· {issue}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )
+            })}
+          </div>
         )}
       </section>
 
