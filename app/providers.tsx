@@ -31,7 +31,7 @@ function TopNav() {
     <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-[var(--border)] bg-[var(--bg)]/80 backdrop-blur-xl">
       <div className="max-w-[1200px] mx-auto px-6 h-full flex items-center justify-between gap-8">
         <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-          <div className="h-8 w-8 rounded-lg bg-[var(--accent)] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+          <div className="h-8 w-8 rounded-lg bg-[#8b5cf6] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
             <span className="text-white text-sm font-bold">G</span>
           </div>
           <span className="font-semibold text-[var(--text-primary)] text-base tracking-tight">GrowthLab</span>

@@ -91,7 +91,7 @@ export default function HomePage() {
   ]
 
   return (
-    <div className="min-h-screen pb-24 overflow-hidden relative">
+    <div className="min-h-screen pb-16 overflow-hidden relative">
       {/* Semrush-style fluid background gradient */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[10%] w-[500px] h-[500px] md:w-[800px] md:h-[800px] rounded-full bg-[var(--accent)]/10 blur-[100px] mix-blend-multiply dark:mix-blend-screen animate-pulse" style={{ animationDuration: '8s' }} />
@@ -99,18 +99,18 @@ export default function HomePage() {
         <div className="absolute bottom-[40%] left-[30%] w-[400px] h-[400px] md:w-[700px] md:h-[700px] rounded-full bg-[#ec4899]/5 blur-[120px] mix-blend-multiply dark:mix-blend-screen animate-pulse" style={{ animationDuration: '12s', animationDelay: '2s' }} />
       </div>
 
-      <div className="relative z-10 max-w-[1000px] mx-auto px-6 pt-24 md:pt-36 text-center">
+      <div className="relative z-10 max-w-[1000px] mx-auto px-6 pt-10 md:pt-16 text-center">
         {/* Headline */}
-        <h1 className="text-[44px] md:text-[64px] lg:text-[76px] font-bold text-[var(--text-primary)] leading-[1.05] tracking-tight mb-6 max-w-4xl mx-auto">
-          Win Every Search.<br />
+        <h1 className="text-[44px] md:text-[64px] lg:text-[76px] font-bold text-[var(--text-primary)] leading-[1.05] tracking-tight mb-4 max-w-4xl mx-auto">
+          Find the keywords<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-muted)] dark:from-[var(--text-primary)] dark:to-[#737373]">
-            From Traditional SEO to AI Discovery.
+            your competitors win.
           </span>
         </h1>
 
         {/* Subtext */}
-        <p className="text-lg md:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto mb-12 leading-relaxed">
-          Track your brand visibility, fix gaps, and grow across Google and AI search—all from one trusted platform.
+        <p className="text-lg md:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto mb-8 leading-relaxed">
+          Enter your site and up to two competitors. GrowthLab maps the gaps, scores them by commercial priority, and generates the content to close them.
         </p>
 
         {/* Form card - Exact Layout Kept */}
@@ -172,7 +172,7 @@ export default function HomePage() {
                 <button
                   type="submit"
                   disabled={loading || !targetUrl || !topic}
-                  className="flex-[3] bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-lg px-5 py-3 text-sm transition-colors flex items-center justify-center gap-2 shadow-sm"
+                  className="flex-[3] bg-[#1e3a5f] hover:bg-[#162d4a] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-lg px-5 py-3 text-sm transition-colors flex items-center justify-center gap-2 shadow-sm"
                 >
                   {loading ? 'Running analysis…' : (
                     <>Run Analysis <ArrowRight className="h-4 w-4" /></>
@@ -192,9 +192,9 @@ export default function HomePage() {
       </div>
 
       {/* Tools Section */}
-      <div className="relative z-10 max-w-[1200px] mx-auto px-6 pt-24">
+      <div className="relative z-10 max-w-[1200px] mx-auto px-6 pt-12">
         <div className="mb-12">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] text-[var(--text-muted)] mb-3">SOLUTIONS (6)</p>
+          <p className="text-xs font-bold uppercase tracking-[0.15em] text-[var(--text-muted)] mb-3">What GrowthLab does</p>
           <h2 className="text-[32px] md:text-[40px] font-bold text-[var(--text-primary)] tracking-tight leading-tight max-w-2xl">
             GET SEEN. GET CITED. BE THE ANSWER.
           </h2>

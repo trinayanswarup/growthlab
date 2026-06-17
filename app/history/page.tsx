@@ -32,14 +32,17 @@ function extractDomain(url: string): string {
 
 function OpportunityBadge({ score }: { score: number | null }) {
   if (score === null) return <span className="text-[var(--text-muted)] text-sm">—</span>
-  const isHigh = score >= 60;
-  const isMed = score >= 30;
-  
+  const isHigh = score >= 60
+  const isMed = score >= 30
+  const cls = isHigh
+    ? 'bg-[var(--missing-light)] text-[var(--missing)] border border-red-200 dark:border-red-900'
+    : isMed
+    ? 'bg-[var(--commercial-light)] text-[var(--commercial)] border border-amber-200 dark:border-amber-900'
+    : 'bg-[var(--present-light)] text-[var(--present)] border border-green-200 dark:border-green-900'
   return (
-    <div className="flex items-center gap-2">
-      <div className={`h-2 w-2 rounded-full ${isHigh ? 'bg-[var(--error)] shadow-[0_0_8px_var(--error)]' : isMed ? 'bg-[var(--warning)] shadow-[0_0_8px_var(--warning)]' : 'bg-[var(--success)] shadow-[0_0_8px_var(--success)]'}`} />
-      <span className="text-sm font-medium text-[var(--text-primary)]">{score}%</span>
-    </div>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold ${cls}`}>
+      {score}%
+    </span>
   )
 }
 
@@ -104,10 +107,13 @@ function TrackButton({
       {loading ? (
         <span className="animate-pulse">...</span>
       ) : tracked ? (
-        <>
-          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          Tracked
-        </>
+        <span className="flex flex-col items-start gap-0">
+          <span className="flex items-center gap-1">
+            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Tracked
+          </span>
+          <span className="text-[0.65rem] text-[var(--text-muted)] font-normal">re-audits daily</span>
+        </span>
       ) : (
         <>
           <svg className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>
@@ -163,7 +169,7 @@ export default function HistoryPage() {
               <tr className="text-left text-xs uppercase tracking-wider text-[var(--text-muted)] bg-[var(--surface)]">
                 <th className="py-3 pl-4 pr-4 font-medium">Target</th>
                 <th className="py-3 pr-4 font-medium">Competitors</th>
-                <th className="py-3 pr-4 font-medium">Gap score</th>
+                <th className="py-3 pr-4 font-medium">Opportunity Score</th>
                 <th className="py-3 pr-4 font-medium">Status</th>
                 <th className="py-3 pr-4 font-medium">Date</th>
                 <th className="py-3 pr-4 font-medium"><span className="sr-only">Actions</span></th>

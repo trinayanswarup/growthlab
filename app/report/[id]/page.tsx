@@ -47,21 +47,14 @@ function sortMatrix(rows: PresenceResult[]): PresenceResult[] {
 }
 
 const INTENT_DOT: Record<string, string> = {
-  commercial: 'bg-[var(--warning)]',
-  transactional: 'bg-[var(--success)]',
+  commercial: 'bg-[var(--commercial)]',
+  transactional: 'bg-[var(--present)]',
   informational: 'bg-[#38bdf8]',
 }
 const INTENT_TEXT: Record<string, string> = {
-  commercial: 'text-[var(--warning)]',
-  transactional: 'text-[var(--success)]',
+  commercial: 'text-[var(--commercial)]',
+  transactional: 'text-[var(--present)]',
   informational: 'text-[#38bdf8]',
-}
-
-const REVENUE_LABEL: Record<string, string> = { high: '$$$', medium: '$$', low: '$' }
-const REVENUE_STYLE: Record<string, string> = {
-  high: 'text-green-400',
-  medium: 'text-yellow-400',
-  low: 'text-[var(--text-secondary)]',
 }
 
 // ─── Sub-components ────────────────────────────────────────────────────────
@@ -111,13 +104,19 @@ function TraceItem({ status, label }: { status: AgentStatus; label: string }) {
   )
 }
 
-function PresenceCell({ present }: { present: boolean }) {
-  return present
-    ? <span className="text-green-400 font-bold">✓</span>
-    : <span className="text-red-400">✕</span>
+function PriorityLabel({ level }: { level: string }) {
+  if (level === 'high') return <span className="text-[var(--missing)] font-semibold text-xs">High</span>
+  if (level === 'medium') return <span className="text-[var(--commercial)] font-semibold text-xs">Med</span>
+  return <span className="text-[var(--text-muted)] text-xs">Low</span>
 }
 
-function QuickWins({ matrix, onOpen }: { matrix: PresenceResult[]; reportId: string; onOpen: (kw: string) => void }) {
+function PresenceCell({ present }: { present: boolean }) {
+  return present
+    ? <span className="inline-flex items-center gap-1 text-[var(--present)] font-semibold text-sm">✓</span>
+    : <span className="text-[var(--missing)] text-sm font-medium">✕</span>
+}
+
+function QuickWins({ matrix, c1Domain, c2Domain, onOpen }: { matrix: PresenceResult[]; reportId: string; c1Domain: string | null; c2Domain: string | null; onOpen: (kw: string) => void }) {
   const wins = matrix
     .filter((r) => !r.target_present && (r.competitor1_present || r.competitor2_present) && r.intent !== 'informational')
     .sort((a, b) => (REVENUE_ORDER[a.revenue_potential] ?? 1) - (REVENUE_ORDER[b.revenue_potential] ?? 1))
@@ -132,18 +131,19 @@ function QuickWins({ matrix, onOpen }: { matrix: PresenceResult[]; reportId: str
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {wins.map((r) => (
-          <div key={r.id || r.keyword} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 hover:border-[var(--accent-30)] transition-colors">
-            <p className="text-sm text-[var(--text-primary)] font-mono mb-3 leading-snug">{r.keyword}</p>
-            <div className="flex items-center gap-3 mb-4">
+          <div key={r.id || r.keyword} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 hover:border-[var(--accent-30)] transition-colors flex flex-col">
+            <p className="text-sm text-[var(--navy)] font-mono font-medium mb-3 leading-snug">{r.keyword}</p>
+            <div className="flex items-center gap-3 mb-2">
               <IntentBadge intent={r.intent} />
-              <span className={`text-xs font-mono font-bold ${REVENUE_STYLE[r.revenue_potential]}`}>
-                {REVENUE_LABEL[r.revenue_potential]}
-              </span>
+              <PriorityLabel level={r.revenue_potential} />
             </div>
+            <p className="text-xs text-[var(--text-muted)] mb-4">
+              {r.competitor1_present && c1Domain ? c1Domain : r.competitor2_present && c2Domain ? c2Domain : 'Competitor'} appears · you don&apos;t
+            </p>
             <button
               type="button"
               onClick={() => onOpen(r.keyword)}
-              className="text-xs px-3 py-1.5 rounded-full bg-[var(--accent-10)] border border-[var(--accent-30)] text-[var(--accent)] font-medium hover:bg-[var(--accent-30)] transition-colors"
+              className="mt-auto text-xs px-3 py-1.5 bg-[var(--accent)] text-white font-medium rounded-lg hover:bg-[var(--accent-hover)] transition-colors self-start"
             >
               Generate content →
             </button>
@@ -341,6 +341,9 @@ function GeneratePanel({ keyword, reportId, colSpan }: { keyword: string; report
                       )}
                     </div>
                   )}
+                  <p className="text-xs text-[var(--text-muted)] px-4 py-3 italic border-t border-[var(--border)]">
+                    AI-generated first draft. Verify prices, claims, and product details before publishing.
+                  </p>
                 </div>
               )}
             </div>
@@ -397,6 +400,11 @@ function GeneratePanel({ keyword, reportId, colSpan }: { keyword: string; report
                     dangerouslySetInnerHTML={{ __html: compHtml }}
                   />
                 </div>
+              )}
+              {compHtml && (
+                <p className="text-xs text-[var(--text-muted)] mt-3 italic">
+                  AI-generated first draft. Verify prices, claims, and product details before publishing.
+                </p>
               )}
             </div>
           )}
@@ -511,14 +519,14 @@ export default function ReportPage({ params }: Props) {
   const sortedCro = cro ? [...cro].sort((a, b) => (a.passed ? 1 : 0) - (b.passed ? 1 : 0)) : null
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="p-8 max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-6">
         <Link href="/history" className="inline-flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] mb-3 transition-colors">
           <ArrowLeft className="h-3 w-3" />
           History
         </Link>
-        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">{targetDomain}</h1>
+        <h1 className="text-2xl font-bold text-[var(--navy)] mb-2">{targetDomain}</h1>
         <div className="flex items-center gap-2 flex-wrap">
           {report.topic && (
             <span className="px-2 py-0.5 rounded-full bg-[var(--accent-10)] text-[var(--accent)] text-xs font-medium border border-[var(--accent-30)]">
@@ -550,17 +558,19 @@ export default function ReportPage({ params }: Props) {
             {report.opportunity_score}%
           </span>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">Opportunity score</p>
+            <p className="text-sm font-semibold text-[var(--navy)] mb-1">Competitive Gap Score</p>
             <p className="text-xs text-[var(--text-secondary)] mb-3 max-w-sm">
               % of commercial queries where competitors appear in results and you don&apos;t
             </p>
-            <progress className="gap-score-bar" value={report.opportunity_score} max={100} />
+            <div className="w-full bg-[var(--border)] rounded-full h-1.5 mt-3">
+              <div className="bg-[var(--accent)] h-1.5 rounded-full transition-all" style={{ width: `${report.opportunity_score}%` }} />
+            </div>
           </div>
         </div>
       )}
 
       {/* Quick wins */}
-      {matrix && <QuickWins matrix={matrix} reportId={report.id} onOpen={setOpenRow} />}
+      {matrix && <QuickWins matrix={matrix} reportId={report.id} c1Domain={c1Domain} c2Domain={c2Domain} onOpen={setOpenRow} />}
 
       {/* Presence matrix */}
       <section>
@@ -583,54 +593,62 @@ export default function ReportPage({ params }: Props) {
         )}
 
         {matrix && matrix.length > 0 && (
-          <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
+          <div className="overflow-x-auto bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden">
             <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="text-left text-xs uppercase tracking-wider text-[var(--text-muted)] bg-[var(--surface)]">
-                  <th className="py-3 pl-4 pr-3 font-medium">Keyword</th>
-                  <th className="py-3 pr-3 font-medium">Intent</th>
-                  <th className="py-3 pr-3 font-medium truncate max-w-[120px]">{targetDomain}</th>
-                  {c1Domain && <th className="py-3 pr-3 font-medium truncate max-w-[120px]">{c1Domain}</th>}
-                  {c2Domain && <th className="py-3 pr-3 font-medium truncate max-w-[120px]">{c2Domain}</th>}
-                  <th className="py-3 pr-3 font-medium">Revenue</th>
-                  <th className="py-3 pr-4 font-medium"><span className="sr-only">Action</span></th>
+              <thead className="sticky top-0 bg-[var(--surface-2)] z-10">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--navy)] uppercase tracking-wider border-b border-[var(--border)]">Keyword</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--navy)] uppercase tracking-wider border-b border-[var(--border)]">Intent</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--navy)] uppercase tracking-wider border-b border-[var(--border)] truncate max-w-[120px]">{targetDomain}</th>
+                  {c1Domain && <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--navy)] uppercase tracking-wider border-b border-[var(--border)] truncate max-w-[120px]">{c1Domain}</th>}
+                  {c2Domain && <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--navy)] uppercase tracking-wider border-b border-[var(--border)] truncate max-w-[120px]">{c2Domain}</th>}
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-[var(--navy)] uppercase tracking-wider border-b border-[var(--border)]">Commercial Priority</th>
+                  <th className="px-4 py-3 border-b border-[var(--border)]"><span className="sr-only">Action</span></th>
                 </tr>
               </thead>
               <tbody>
                 {matrix.map((row) => {
                   const isGap = !row.target_present && (row.competitor1_present || row.competitor2_present)
+                  const isCovered = row.target_present
+                  const isNoSignal = !row.target_present && !row.competitor1_present && !row.competitor2_present
                   const isOpen = openRow === row.keyword
                   return (
                     <Fragment key={row.id || row.keyword}>
-                      <tr className={`border-t border-[var(--border)] hover:bg-[var(--surface-2)] transition-colors ${isGap ? 'bg-[var(--accent-5)]' : ''}`}>
-                        <td className={`py-3 pr-3 font-mono text-xs text-[var(--text-primary)] max-w-[200px] ${isGap ? 'pl-3.5 border-l-2 border-l-[var(--accent)]' : 'pl-4'}`}>
+                      <tr className={`border-b border-[var(--border)] hover:bg-[var(--surface-2)] transition-colors ${isGap ? 'bg-[var(--missing-light)]' : ''}`}>
+                        <td className={`py-4 pr-3 font-mono text-xs text-[var(--text-primary)] max-w-[200px] ${isGap ? 'pl-3.5 border-l-2 border-l-[var(--missing)]' : isCovered ? 'pl-3.5 border-l-2 border-l-[var(--present)]' : 'pl-4'}`}>
                           <span title={row.keyword} className="block truncate">{row.keyword}</span>
                         </td>
-                        <td className="py-3 pr-3">
+                        <td className="px-4 py-4">
                           <IntentBadge intent={row.intent} />
                         </td>
-                        <td className="py-3 pr-3 text-center">
+                        <td className="px-4 py-4 text-center">
                           <PresenceCell present={row.target_present} />
                         </td>
                         {c1Domain && (
-                          <td className="py-3 pr-3 text-center">
+                          <td className="px-4 py-4 text-center">
                             <PresenceCell present={row.competitor1_present} />
                           </td>
                         )}
                         {c2Domain && (
-                          <td className="py-3 pr-3 text-center">
+                          <td className="px-4 py-4 text-center">
                             <PresenceCell present={row.competitor2_present} />
                           </td>
                         )}
-                        <td className={`py-3 pr-3 text-xs font-mono font-bold ${REVENUE_STYLE[row.revenue_potential]}`}>
-                          {REVENUE_LABEL[row.revenue_potential]}
+                        <td className="px-4 py-4">
+                          {isGap ? (
+                            <PriorityLabel level={row.revenue_potential} />
+                          ) : isCovered ? (
+                            <span className="text-[var(--present)] font-semibold text-xs">Covered</span>
+                          ) : isNoSignal ? (
+                            <span className="text-[var(--text-muted)] text-xs">No signal</span>
+                          ) : null}
                         </td>
-                        <td className="py-3 pr-4">
+                        <td className="px-4 py-4">
                           {isGap && (
                             <button
                               type="button"
                               onClick={() => setOpenRow(isOpen ? null : row.keyword)}
-                              className="text-xs px-3 py-1 rounded-full bg-[var(--accent-10)] border border-[var(--accent-30)] text-[var(--accent)] font-medium hover:bg-[var(--accent-30)] transition-colors whitespace-nowrap"
+                              className="px-3 py-1.5 bg-[var(--accent)] text-white text-xs font-medium rounded-lg hover:bg-[var(--accent-hover)] transition-colors whitespace-nowrap"
                             >
                               {isOpen ? 'Close ↑' : 'Generate →'}
                             </button>

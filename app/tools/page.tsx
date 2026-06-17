@@ -102,7 +102,8 @@ function ComparisonTab() {
         Enter two products to generate a publish-ready comparison page with affiliate CTA placeholders.
       </p>
 
-      <form onSubmit={handleSubmit} className="mb-6">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-6 mb-6">
+      <form onSubmit={handleSubmit} className="mb-0">
         <div className="flex gap-3 mb-3">
           <input
             type="text"
@@ -131,6 +132,7 @@ function ComparisonTab() {
           {loading ? stages.label ?? 'Working…' : 'Generate comparison'}
         </button>
       </form>
+      </div>
 
       {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
 
@@ -143,28 +145,27 @@ function ComparisonTab() {
 
       {result && !loading && (
         <div>
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-xs text-[var(--text-secondary)]">Preview</span>
-            <span className="text-xs font-mono text-[var(--text-secondary)] bg-[var(--surface-2)] px-2 py-0.5 rounded">
-              {wordCount.toLocaleString()} words
-            </span>
-          </div>
-
           <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] overflow-hidden shadow-glass">
             <div className="bg-[var(--surface-2)] px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
               <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-[var(--error)] opacity-60" />
-                <div className="w-3 h-3 rounded-full bg-[var(--warning)] opacity-60" />
-                <div className="w-3 h-3 rounded-full bg-[var(--success)] opacity-60" />
+                <div className="w-3 h-3 rounded-full bg-red-400" />
+                <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                <div className="w-3 h-3 rounded-full bg-green-400" />
               </div>
-              <CopyButton text={result.html} />
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-[var(--text-muted)]">{wordCount.toLocaleString()} words</span>
+                <CopyButton text={result.html} />
+              </div>
             </div>
             <div
-              className="p-8 max-h-[60vh] overflow-y-auto bg-white text-[#111111] text-[15px] leading-relaxed [&_h1]:text-[28px] [&_h1]:font-bold [&_h1]:mb-6 [&_h1]:leading-tight [&_h2]:text-[22px] [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-[18px] [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:mb-5 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-5 [&_li]:mb-2 [&_table]:w-full [&_table]:border-collapse [&_table]:mb-8 [&_th]:border-b [&_th]:border-gray-300 [&_th]:py-3 [&_th]:text-left [&_th]:font-semibold [&_td]:border-b [&_td]:border-gray-200 [&_td]:py-3 [&_strong]:font-semibold"
+              className="p-8 max-h-[600px] overflow-y-auto bg-white text-[#111111] text-[15px] leading-relaxed [&_h1]:text-[28px] [&_h1]:font-bold [&_h1]:mb-6 [&_h1]:leading-tight [&_h2]:text-[22px] [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-[18px] [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:mb-5 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-5 [&_li]:mb-2 [&_table]:w-full [&_table]:border-collapse [&_table]:mb-8 [&_th]:border-b [&_th]:border-gray-300 [&_th]:py-3 [&_th]:text-left [&_th]:font-semibold [&_td]:border-b [&_td]:border-gray-200 [&_td]:py-3 [&_strong]:font-semibold"
               // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted Gemini output rendered for preview
               dangerouslySetInnerHTML={{ __html: result.html }}
             />
           </div>
+          <p className="text-xs text-[var(--text-muted)] mt-3 italic">
+            AI-generated first draft. Verify prices, claims, and product details before publishing.
+          </p>
         </div>
       )}
     </div>
@@ -241,7 +242,8 @@ function HeadlineTab() {
         Test a headline against 5 variants optimised for your goal.
       </p>
 
-      <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-4">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-6 mb-6">
+      <form onSubmit={handleSubmit} className="mb-0 flex flex-col gap-4">
         <div>
           <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5 uppercase tracking-wider">
             Headline
@@ -252,7 +254,7 @@ function HeadlineTab() {
             onChange={(e) => setHeadline(e.target.value)}
             placeholder="e.g. Best VPN for Streaming 2025"
             disabled={loading}
-            className="w-full px-4 py-2.5 rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-[var(--accent)] transition-colors disabled:opacity-50"
+            className="w-full px-4 py-2.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-[var(--accent)] transition-colors disabled:opacity-50"
           />
         </div>
 
@@ -284,6 +286,7 @@ function HeadlineTab() {
           {loading ? 'Testing…' : 'Test headline'}
         </button>
       </form>
+      </div>
 
       {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
 
@@ -299,15 +302,16 @@ function HeadlineTab() {
             <div className="divide-y divide-[var(--border)]">
               {variants.map((v, i) => (
                 <div key={i} className="p-5 flex gap-5 hover:bg-[var(--surface-2)] transition-colors">
-                  <div className="flex-shrink-0 flex flex-col items-center justify-center w-12 h-12 rounded-full bg-[var(--accent-10)] text-[var(--accent)] font-mono font-bold text-lg border border-[var(--accent)]/20 shadow-sm">
+                  <div className="flex-shrink-0 flex flex-col items-center justify-center w-12 h-12 rounded-full bg-[var(--accent-10)] text-[var(--accent)] font-mono font-bold text-lg border border-[var(--accent-30)] shadow-sm" title="AI Score">
                     {v.estimatedCTRScore}
                   </div>
-                  <div>
-                    <p className="text-base font-semibold text-[var(--text-primary)] leading-snug mb-2">{v.variant}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-base font-semibold text-[var(--navy)] leading-snug mb-2">{v.variant}</p>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--warning)] bg-[var(--warning-light)] px-2 py-0.5 rounded-sm border border-[var(--warning)]/20">
+                      <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--commercial)] bg-[var(--commercial-light)] px-2 py-0.5 rounded-sm border border-[var(--commercial)]/20">
                         {v.angle}
                       </span>
+                      <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">AI Score</span>
                     </div>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{v.reasoning}</p>
                   </div>
@@ -328,16 +332,15 @@ function HeadlineTab() {
           )}
 
           {combined && (
-            <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-[var(--accent)] to-[#38bdf8] p-[1px] shadow-glass mt-8">
-              <div className="bg-[var(--surface)] rounded-lg p-6 h-full w-full">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-[var(--accent)] uppercase tracking-wider">AI Combined Winner</span>
-                  </div>
-                  <CopyButton text={combined} label="Copy" />
-                </div>
-                <p className="text-xl md:text-2xl font-bold text-[var(--text-primary)] leading-snug">{combined}</p>
+            <div className="rounded-lg border border-[var(--accent)] bg-[var(--accent-5)] p-6 mt-8">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold text-[var(--accent)] uppercase tracking-wider">AI Combined Winner</span>
+                <CopyButton text={combined} label="Copy" />
               </div>
+              <p className="text-xl md:text-2xl font-bold text-[var(--navy)] leading-snug">{combined}</p>
+              <p className="text-xs text-[var(--text-muted)] mt-3 italic">
+                AI-generated first draft. Verify prices, claims, and product details before publishing.
+              </p>
             </div>
           )}
         </div>
@@ -360,20 +363,20 @@ export default function ToolsPage() {
   ]
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="p-8 max-w-5xl mx-auto">
       <h1 className="text-2xl font-semibold mb-1">Tools</h1>
       <p className="text-[var(--text-secondary)] text-sm mb-6">AI-powered content generation tools.</p>
 
-      <div className="inline-flex gap-1 mb-8 p-1 bg-[var(--surface-2)] rounded-lg">
+      <div className="flex border-b border-[var(--border)] mb-6 gap-6">
         {tabs.map((t) => (
           <button
             key={t.id}
             type="button"
             onClick={() => setTab(t.id)}
-            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
+            className={`pb-3 text-sm transition-colors -mb-px ${
               tab === t.id
-                ? 'bg-[var(--surface)] text-[var(--text-primary)] shadow-sm'
-                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface)]/50'
+                ? 'text-[var(--navy)] font-semibold border-b-2 border-[var(--accent)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             {t.label}

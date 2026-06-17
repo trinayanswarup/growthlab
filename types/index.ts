@@ -48,7 +48,7 @@ export interface MonetisationOpportunity {
 
 export interface CROFinding {
   factor: string
-  passed: boolean
+  result: 'pass' | 'warning' | 'fail'
   recommendation: string
 }
 

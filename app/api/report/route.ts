@@ -158,7 +158,7 @@ async function runReportBackground(
         croResult.value.map((c) => ({
           report_id: reportId,
           factor: c.factor,
-          passed: c.passed,
+          passed: c.result === 'pass',
           recommendation: c.recommendation,
         }))
       )
