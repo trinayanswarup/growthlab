@@ -335,9 +335,10 @@ function GeneratePanel({ keyword, reportId, colSpan }: { keyword: string; report
                         </div>
                       )}
                       {brief.commissioningNote && (
-                        <p className="text-xs text-[var(--text-muted)]">
-                          Note: <span className="text-[var(--text-secondary)]">{brief.commissioningNote}</span>
-                        </p>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1">Commissioning note</p>
+                          <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{brief.commissioningNote}</p>
+                        </div>
                       )}
                     </div>
                   )}

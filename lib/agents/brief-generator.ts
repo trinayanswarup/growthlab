@@ -31,7 +31,7 @@ Return ONLY a JSON object (no markdown, no explanation) with this exact structur
   "claimsToVerify": string[],
   "internalLinkingSuggestions": string[],
   "affiliateCTAs": string[],
-  "commissioningNote": string
+  "commissioningNote": "Write as a clean professional paragraph. No 'Note:' prefix. No meta-commentary about the article. Just the commissioning instruction."
 }
 
 Make it actionable for an affiliate content site. Focus on commercial intent.

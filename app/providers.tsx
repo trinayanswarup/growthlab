@@ -24,6 +24,7 @@ function TopNav() {
   const pathname = usePathname()
   const links = [
     { href: '/', label: 'Solutions' },
+    { href: '/audit', label: 'Quick Audit' },
     { href: '/tools', label: 'Tools' },
     { href: '/history', label: 'History' },
   ]
