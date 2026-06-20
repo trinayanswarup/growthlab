@@ -1,203 +1,166 @@
 # GrowthLab — Product Requirements Document
 
 ## Problem
-Affiliate and content sites leave revenue on the table because auditing tools are either purely technical (Ahrefs, Screaming Frog) or too expensive for solo operators. There's no tool that combines SEO auditing, keyword gap detection, monetisation mapping, and CRO analysis into one pipeline — and then generates the actual content to close those gaps.
 
-## Target users (portfolio demo context)
-- Mediatech Vilnius: growth team that runs cybernews.com, investorsobserver.com — exactly this product category
-- Paradise Media: affiliate SEO publisher — needs comparison pages and content briefs
-- Interviewers: see commercial thinking, not just technical correctness
+Affiliate and content sites leave revenue on the table because:
 
-## Core user flow
-1. User pastes a URL → clicks "Run Audit"
-2. Four agents fire in parallel, each section of dashboard renders as it completes
-3. User sees overall opportunity score + prioritised quick wins
-4. User generates a comparison page, content brief, or headline variants from findings
+1. SEO audit tools (Ahrefs, Screaming Frog) are technical — they don't connect findings to content action
+2. No tool shows you exactly which commercial keywords competitors win that you don't, and then generates the content to close those gaps
+3. Monitoring competitors requires expensive subscriptions or manual work
+
+GrowthLab automates the workflow a content strategist at an affiliate site runs manually every week.
+
+## Target users
+
+- **Mediatech Vilnius** — runs cybernews.com, investorsobserver.com. Needs comparison pages and keyword gap detection at scale.
+- **Paradise Media** — iGaming affiliate network. Needs competitor tracking, internal dashboards, scheduled jobs.
+- **Content/affiliate site operators** — any site monetising through affiliate programmes that needs to find and close keyword gaps.
+
+## Core user story
+
+> "I enter my site and two competitors. GrowthLab finds commercial keywords where competitors appear in search results and I don't. I click one gap and get a publish-ready content brief or comparison page in under 60 seconds."
 
 ---
 
 ## Features
 
-### F1 — SEO Auditor (Cheerio, no LLM)
-For each of the top 5 pages (homepage + top 4 linked internal pages):
-- Title tag: present? ≤60 chars?
-- Meta description: present? ≤155 chars?
-- H1: exactly one?
-- H2/H3 count
-- Word count
-- Images without alt tags
-- Internal vs external link count
-- Canonical tag present?
-- Page load time (fetch latency)
+### F1 — Competitive Report (primary flow)
 
-Output: `PageAudit[]`, each page scored 0–100 weighted by importance.
-Scoring weights: title (15), meta (10), H1 (20), word count (15), alt tags (15), load time (15), canonical (10).
+Input: target URL + up to 2 competitor URLs + topic/niche
 
-### F2 — Content Gap Agent (Tavily)
-Extracts site topic from homepage (Groq, short prompt). Runs 4 Tavily searches:
-- `{topic} best {year}`
-- `{topic} vs {competitor}`  
-- `{topic} how to`
-- `{topic} review`
+Four agents run in parallel:
 
-For each search, checks if target site appears in top 10. If not → gap. Extracts: keyword, intent, top-ranking competitor, gap score (based on Tavily result position and estimated volume proxy).
+- SEO Auditor (Cheerio) — scores top 5 pages 0–100 across 7 factors
+- Presence Matrix (Tavily) — 12 queries, checks all 3 sites per query
+- Monetisation Agent (Groq) — maps topics to affiliate categories
+- CRO Agent (Groq) — checks 5 conversion factors
 
-Output: `KeywordGap[]` ranked by gap score.
+Output: presence matrix, opportunity score, quick wins, SEO audit, monetisation opportunities, CRO findings
 
-### F3 — Monetisation Agent (Groq)
-Takes site topic + page list. Prompt maps topics to affiliate categories:
-`VPN/security | web hosting | finance/investing | health | software/SaaS | travel | e-commerce`
+### F2 — Presence Matrix
 
-For each matched category: affiliate programme examples, typical commission range, which existing pages are candidates, pages with product mentions but no CTA (quick wins).
+12 keyword queries per report. For each query:
 
-Output: `MonetisationOpportunity[]` with priority rating.
+- Check if target appears in Tavily top 10
+- Check if each competitor appears
+- Classify intent: commercial / transactional / informational
+- Classify commercial priority: High / Medium / Low / No signal
 
-### F4 — CRO Agent (Groq)
-Fetches homepage + top pages. Analyses:
-- Clear value proposition above the fold?
-- CTA presence and strength
-- Social proof signals (testimonials, user counts, press)
-- Trust signals (privacy policy, about page, contact)
-- Content freshness indicators (dates on articles)
+Gap rows = target absent + at least one competitor present. Only gap rows show Generate buttons and priority scores. Rows where everyone is absent show "No signal" — no false urgency.
 
-Output: pass/fail per factor with specific recommendation string.
+**Credibility constraint:** Never claim exact Google rankings. Never fabricate search volume. Every number is a transparent heuristic or real Tavily signal.
 
-### F5 — Growth Dashboard
-Top metric cards:
-- Overall opportunity score (0–100, composite)
-- SEO issues count
-- Keyword gaps count
-- Estimated monthly revenue potential (keyword gaps × avg RPM for niche)
+### F3 — Inline Content Generation
 
-Below: 4 collapsible sections (one per agent), each with "Quick wins" list at top.
-Bottom: Prioritised action backlog — all findings sorted by impact/effort ratio.
+Click any gap row → inline panel with two tabs:
 
-### F6 — Comparison Page Generator (Gemini 1.5 Flash)
-User inputs two products. Pipeline:
-1. Tavily search: `{product} features pricing review 2025` × 2
-2. Fetch top 2 results each → pass full HTML to Gemini
-3. Gemini extracts structured data: `{ name, price, keyFeatures, pros, cons, bestFor, rating }`
-4. Gemini generates full comparison page HTML:
-   - Intro paragraph
-   - Feature comparison table (rows = features, columns = products)
-   - Pros/cons per product
-   - Verdict section (recommended for specific use cases)
-   - FAQ (5 questions)
-   - Affiliate CTA placeholders: `<a href="{{AFFILIATE_LINK_PRODUCT1}}" class="cta-button">Try {product} →</a>`
+**Content Brief** (Gemini 2.0 Flash):
 
-Output: rendered preview + raw HTML copy button.
+- Title tag + meta description
+- Full H2/H3 article structure
+- Recommended word count
+- Secondary keywords
+- Competitor analysis
+- Affiliate CTA suggestions
+- Commissioning note for writers
 
-### F7 — Content Brief Generator (Gemini 1.5 Flash)
-Input: keyword (from gap list or manual entry). Output JSON rendered as formatted brief:
-- Primary keyword + secondary keywords + related questions
-- Recommended title tag and meta description
-- Article structure (H2s and H3s in order)
-- Recommended word count and depth
-- Top 3 ranking competitors and what makes their content strong
-- Claims to verify
-- Internal linking suggestions
-- Suggested affiliate CTAs
-- One-paragraph commissioning note
+**Comparison Page** (Gemini 2.0 Flash + Tavily):
 
-Generation time target: ~8 seconds.
+- Researches both products via Tavily
+- Generates full HTML: feature table, pros/cons, verdict, FAQ
+- Affiliate CTA placeholders: `{{AFFILIATE_LINK_PRODUCT1}}`
+- Publish-ready first draft — label as such, verify before publishing
 
-### F8 — Headline Tester (Groq)
-Input: headline + goal (maximize CTR / increase authority / curiosity gap / target keyword / emotional resonance).
-Output: 5 variants as JSON array `[{ variant, angle, reasoning, estimatedCTRScore }]` rendered as sortable cards.
-"Combine best elements" button: sends all 5 back to Groq → synthesises single strongest headline.
+### F4 — Headline Tester
 
-### F9 — Audit History
-List of past audits: URL, date, overall score, quick link to dashboard. Stored in Supabase. No auth — all audits visible to all users (demo context, no sensitive data).
+Input: headline + goal (CTR / authority / curiosity / keyword / emotion)
+Output: 5 AI-scored variants (Groq) with angle, reasoning, AI score
+"Combine" button: synthesises strongest elements into one headline
+
+### F5 — Quick Audit
+
+Single URL audit, no competitors required.
+Same SEO audit + keyword gap detection.
+Inline brief generation on any gap row.
+Entry point for users who don't have competitors to compare yet.
+
+### F6 — Report History + Tracking
+
+History table: all reports with opportunity score, status, date.
+Track toggle: marks report for daily re-audit.
+Vercel Cron runs at 08:00 UTC — re-runs presence matrix for all tracked reports, updates opportunity score.
 
 ---
 
 ## Data model
 
-### `audits`
-| column | type | notes |
-|--------|------|-------|
-| id | uuid | PK |
-| url | text | input URL |
-| status | text | queued / running / done / failed |
-| seo_status | text | AgentStatus per agent |
-| content_status | text | |
-| monetisation_status | text | |
-| cro_status | text | |
-| topic | text | extracted by Groq from homepage |
-| overall_score | int | 0–100 composite |
-| created_at | timestamptz | |
+### `reports`
 
-### `audit_pages`
-| column | type |
-|--------|------|
-| id | uuid |
-| audit_id | uuid FK |
-| url | text |
-| title | text |
-| seo_score | int |
-| word_count | int |
-| load_time_ms | int |
-| issues | jsonb |
-| created_at | timestamptz |
+id, target_url, competitor_urls[], status, seo_status, presence_status, monetisation_status, cro_status, topic, opportunity_score, tracked, created_at
 
-### `keyword_gaps`
-| column | type |
-|--------|------|
-| id | uuid |
-| audit_id | uuid FK |
-| keyword | text |
-| intent | text |
-| gap_score | int |
-| competitor | text |
-| created_at | timestamptz |
+### `presence_results`
 
-### `monetisation_opportunities`
-| column | type |
-|--------|------|
-| id | uuid |
-| audit_id | uuid FK |
-| category | text |
-| commission_rate | text |
-| programmes | jsonb |
-| matching_pages | jsonb |
-| priority | text |
-| created_at | timestamptz |
+id, report_id, keyword, intent, target_present, competitor1_present, competitor2_present, target_domain, competitor1_domain, competitor2_domain, top_result_domain, revenue_potential, created_at
 
-### `cro_findings`
-| column | type |
-|--------|------|
-| id | uuid |
-| audit_id | uuid FK |
-| factor | text |
-| passed | bool |
-| recommendation | text |
-| created_at | timestamptz |
+### `report_seo_pages`
 
-### `generated_content`
-| column | type |
-|--------|------|
-| id | uuid |
-| audit_id | uuid FK nullable |
-| type | text | comparison / brief / headline |
-| title | text |
-| content | text | HTML or markdown |
-| created_at | timestamptz |
+id, report_id, url, title, seo_score, word_count, load_time_ms, issues (jsonb), created_at
+
+### `report_monetisation`
+
+id, report_id, category, commission_rate, programmes (jsonb), matching_pages (jsonb), cta_missing_pages (jsonb), priority, created_at
+
+### `report_cro`
+
+id, report_id, factor, passed, recommendation, created_at
+
+### `report_generated_content`
+
+id, report_id, keyword, type, title, content, created_at
+
+### `audits` (quick audit)
+
+id, url, status, seo_status, content_status, monetisation_status, cro_status, topic, overall_score, created_at
+
+### `audit_pages`, `keyword_gaps`, `monetisation_opportunities`, `cro_findings`, `generated_content`
+
+Supporting tables for quick audit flow.
 
 ---
 
 ## Non-requirements (explicitly out of scope)
-- User authentication
-- Billing / paywalls
-- Full site crawl (>5 pages)
-- Real-time keyword volume data (Tavily proxy only)
-- PDF export (nice to have, not MVP)
-- Anthropic API
+
+- User authentication or billing
+- Full site crawl (>5 pages per audit)
+- Exact Google rank tracking (requires paid API)
+- Real search volume data (fabricated numbers destroy credibility with SEO professionals)
+- PDF export (window.print() is sufficient)
+- Chrome extension
 
 ---
 
-## Success criteria for portfolio demo
+## LLM strategy
+
+| Task                 | Model              | Reason                                         |
+| -------------------- | ------------------ | ---------------------------------------------- |
+| SEO scoring          | Cheerio only       | Deterministic, testable, no hallucination risk |
+| Topic extraction     | Groq llama-3.3-70b | Short prompt, fast                             |
+| Monetisation mapping | Groq llama-3.3-70b | Short structured JSON                          |
+| CRO analysis         | Groq llama-3.3-70b | Short structured JSON                          |
+| Headline variants    | Groq llama-3.3-70b | Short structured JSON                          |
+| Comparison pages     | Gemini 2.0 Flash   | Long context needed for fetched page content   |
+| Content briefs       | Gemini 2.0 Flash   | Long structured output                         |
+
+Groq fallback: if Gemini hits quota (free tier: 1500 req/day), geminiComplete() automatically falls back to groqComplete(). Output quality degrades slightly but feature never breaks.
+
+---
+
+## Success criteria
+
 - Audit completes in under 60 seconds for a real URL
+- Presence matrix shows real SERP signals, no fabricated data
 - Comparison page output is publish-ready HTML
-- Content brief covers all 9 fields
-- Dashboard loads progressively as agents complete
+- Content brief covers all 9 required fields
+- Tracked reports re-audit automatically without manual intervention
 - Deployed on Vercel with live URL
+- Demo runs cleanly: backlinko.com vs ahrefs.com vs semrush.com, topic: SEO tools
