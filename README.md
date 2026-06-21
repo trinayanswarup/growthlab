@@ -8,7 +8,7 @@ Enter your site, up to two competitors, and a topic niche. GrowthLab runs four a
 
 The core output is a presence matrix: a keyword × site grid showing where competitors appear and your site does not, scored by commercial priority. From any gap, you can generate editor-ready content drafts inline — comparison pages, content briefs, or headline variants. Reports can also be tracked, with presence checks re-run automatically every 24 hours.
 
-**[Live Demo →](https://growthlab.vercel.app)** | Built by [@trinayanswarup](https://github.com/trinayanswarup)
+**[Live Demo →](https://growthlab-rho.vercel.app)** | Built by [@trinayanswarup](https://github.com/trinayanswarup)
 
 ---
 
