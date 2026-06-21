@@ -10,6 +10,10 @@ The core output is a presence matrix: a keyword × site grid showing where compe
 
 **[Live Demo →](https://growthlab-rho.vercel.app)** | Built by [@trinayanswarup](https://github.com/trinayanswarup)
 
+> **First run note:** Cold starts on Vercel's free tier may take 20–40 seconds
+> for the first report. Subsequent reports are faster. Results stream in section
+> by section as each agent completes — you don't wait for the full pipeline.
+
 ---
 
 ![HomePage](docs/homepage.png)
