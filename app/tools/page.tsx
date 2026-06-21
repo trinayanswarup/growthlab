@@ -158,7 +158,7 @@ function ComparisonTab() {
               </div>
             </div>
             <div
-              className="p-8 max-h-[600px] overflow-y-auto bg-white text-[#111111] text-[15px] leading-relaxed [&_h1]:text-[28px] [&_h1]:font-bold [&_h1]:mb-6 [&_h1]:leading-tight [&_h2]:text-[22px] [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-[18px] [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:mb-5 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-5 [&_li]:mb-2 [&_table]:w-full [&_table]:border-collapse [&_table]:mb-8 [&_th]:border-b [&_th]:border-gray-300 [&_th]:py-3 [&_th]:text-left [&_th]:font-semibold [&_td]:border-b [&_td]:border-gray-200 [&_td]:py-3 [&_strong]:font-semibold"
+              className="p-8 max-h-[800px] overflow-y-auto bg-white text-[#111111] text-[15px] leading-relaxed [&_h1]:text-[28px] [&_h1]:font-bold [&_h1]:mb-6 [&_h1]:leading-tight [&_h2]:text-[22px] [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-[18px] [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:mb-5 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-5 [&_li]:mb-2 [&_table]:w-full [&_table]:border-collapse [&_table]:mb-8 [&_th]:border-b [&_th]:border-gray-300 [&_th]:py-3 [&_th]:text-left [&_th]:font-semibold [&_td]:border-b [&_td]:border-gray-200 [&_td]:py-3 [&_strong]:font-semibold"
               // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted Gemini output rendered for preview
               dangerouslySetInnerHTML={{ __html: result.html }}
             />
@@ -363,7 +363,7 @@ export default function ToolsPage() {
   ]
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="p-8 max-w-6xl mx-auto">
       <h1 className="text-2xl font-semibold mb-1">Tools</h1>
       <p className="text-[var(--text-secondary)] text-sm mb-6">AI-powered content generation tools.</p>
 
