@@ -16,9 +16,11 @@ The core output is a presence matrix: a keyword × site grid showing where compe
 
 ---
 
-![HomePage](docs/homepage.png)
-![Report](docs/report.png)
-![Comparison Page Generator](docs/comparison.png)
+<div align="center">
+  <img src="docs/homepage.png" width="480" alt="GrowthLab Homepage" />
+  <img src="docs/report.png" width="480" alt="GrowthLab Report" />
+  <img src="docs/comparison.png" width="480" alt="Comparison Page Generator" />
+</div>
 
 ---
 
